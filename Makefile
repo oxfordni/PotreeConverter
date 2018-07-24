@@ -18,6 +18,12 @@ build: LAStools
 		-DLASZIP_LIBRARY=$(PWD)/../PotreeConverter/LAStools/LASzip/build/src/liblaszip.so && \
 	make -j$(nproc)
 
+.PHONY: condaVenv
+condaVenv:
+	wget --quiet https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh 
+	/bin/bash ~/miniconda.sh -b -p build/conda
+	rm ~/miniconda.sh
+
 .PHONY: clean
 clean:
 	rm -rf LAStools build
