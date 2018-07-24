@@ -40,6 +40,9 @@ public:
 
 		oni::LocalizationResult locb_point = locb_points[pointsRead];
 		point = Point(locb_point.rawPosition_x,locb_point.rawPosition_y,locb_point.rawPosition_z);
+		point.channelIndex = locb_point.channelIndex;
+		point.frameIndex = locb_point.frameIndex;
+		point.intensity = locb_point.intensity;
 		pointsRead++;
 		return true;
 	}

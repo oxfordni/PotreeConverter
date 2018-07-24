@@ -22,7 +22,8 @@ public:
 	unsigned char numberOfReturns = 0;
 	unsigned short pointSourceID = 0;
 	double gpsTime = 0.0;
-
+	int channelIndex = 0.0;
+	int frameIndex = 0.0;
 
 	Point() = default;
 

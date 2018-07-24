@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 from laspy.file import File
 from shapely.geometry import Polygon
 from descartes.patch import PolygonPatch
+import struct
 
 def get_bounding_box(inFile):
     header = inFile.header
@@ -52,14 +53,14 @@ class PoTree:
 
             if self.nodes_bounding_box[filename].intersects(bounding_box):
                 inFile = File(filename, mode='r')
+                dat = inFile.extra_bytes
+                print(struct.unpack("=HH",dat[0]), inFile.red[0],inFile.green[0])
                 level = len(filename.rsplit('/', 1)[-1])
-                
-                coords = np.vstack((inFile.x, inFile.y, inFile.z)).transpose()
+                coords = np.vstack((inFile.x, inFile.y, inFile.z, inFile.red, inFile.green, inFile.intensity)).transpose()
 
                 if level not in points:
                     points[level] = coords
                 else:
-                    print(coords.shape, points[level].shape)
                     points[level] = np.vstack((points[level], coords))
 
         return points
