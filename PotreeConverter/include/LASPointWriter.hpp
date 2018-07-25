@@ -61,8 +61,8 @@ public:
 
 
 		laszip_create(&writer);
-		laszip_add_attribute(writer, 3, "channelIndex", "channelIndex", 0.01, 0.0);
-		laszip_add_attribute(writer, 3, "frameIndex", "frameIndex", 0.01, 0.0);
+		laszip_add_attribute(writer, 3, "channelIndex", "channelIndex", 1.00, 0.0);
+		laszip_add_attribute(writer, 3, "frameIndex", "frameIndex", 1.00, 0.0);
 		laszip_BOOL compress = iEndsWith(file, ".laz") ? 1 : 0;
 		if(compress){
 			laszip_BOOL request_writer = 1;

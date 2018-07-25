@@ -17,6 +17,7 @@ from shapely.geometry import Polygon
 from descartes.patch import PolygonPatch
 import struct
 
+# calculates bounding box (shapely polygon) for the octree node
 def get_bounding_box(inFile):
     header = inFile.header
     header_min = header.min
@@ -34,6 +35,7 @@ class PoTree:
     # initializes the PoTree class and reads the PoTree las files from every node,
     # computes the bounding boxes for every node from the las headers for the node
     def __init__(self, foldername):
+
         file_names = sorted(glob.glob(foldername + '*.las'))
         point_counter = 0
         nodes_bounding_box = {}
@@ -52,12 +54,28 @@ class PoTree:
         for filename in self.nodes_bounding_box.keys():
 
             if self.nodes_bounding_box[filename].intersects(bounding_box):
+                # read las file from the node
                 inFile = File(filename, mode='r')
-                dat = inFile.extra_bytes
-                print(struct.unpack("=HH",dat[0]), inFile.red[0],inFile.green[0])
-                level = len(filename.rsplit('/', 1)[-1])
-                coords = np.vstack((inFile.x, inFile.y, inFile.z, inFile.red, inFile.green, inFile.intensity)).transpose()
+                # read the extra bytes from the object (if present)
+                # this is where all the extra attributes part of the locb point schema live
+                extra_attributes = inFile.extra_bytes
 
+                # 2 attributes added as extra bytes to the LAS schema:
+                # first two bytes: channelIndex, second two bytes: frameIndex
+                attributes = np.empty([extra_attributes.size, 2], dtype=int)
+                for point_index, point_attribute in enumerate(extra_attributes):
+                    attributes[point_index] = struct.unpack("=HH", extra_attributes[point_index])
+                
+                channel_index = attributes[:, 0]  # no offset or scaling added to this attribute
+                frame_index = attributes[:, 1] # no offset or scaling added to this attribute
+
+                # resolution level estimation from the filename
+                # reference for documentation : 
+                # data and index files section of https://github.com/potree/potree/blob/develop/docs/potree-file-format.md
+                level = len(filename.rsplit('/', 1)[-1])
+                coords = np.vstack((inFile.x, inFile.y, inFile.z, channel_index, frame_index, inFile.intensity)).transpose()
+
+                # append points for a certain resolution from the octree to the dictionary
                 if level not in points:
                     points[level] = coords
                 else:
