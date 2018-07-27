@@ -13,6 +13,7 @@ import numpy as np
 import struct
 import time
 import json
+import math
 
 #imports for plotting method
 import matplotlib.pyplot as plt
@@ -81,15 +82,18 @@ class PoTree:
     # returns a dictionary of points at multiple resolutions
     def get_points(self, bounding_box):
 
+        # shapely based viewer resoltion calculation (==fraction of image requested)
         total_polygon = self.bounding_box
         viewport_polygon = get_shapely_polygon(bounding_box)
         intersect_polygon = total_polygon.intersection(viewport_polygon)
-
         resolution = intersect_polygon.area/total_polygon.area
 
-        print(round(resolution * self.octree_depth))
-        hits = self.rtree_idx.intersection((bounding_box), objects=True)
-        points = []
+        # hits = self.rtree_idx.intersection((bounding_box), objects=True)
+
+        # request for 15 closest nodes to the query bounding box from the rtree
+        hits = self.rtree_idx.nearest((bounding_box), 15, objects = True)
+
+        # create absolute paths for the las files for the ids fetched from the rtree
         filenames = {}
         for i in list(hits):
             rtree_node_id = i.id
@@ -98,10 +102,15 @@ class PoTree:
                 filename = (self.foldername + '/data/r/' + str(rtree_node_id).replace('8','') + '/' + str(rtree_node_id).replace('8','r') + '.las')
             filenames[filename] = len(str(rtree_node_id).replace('8','r'))
 
-        filenames = {k: v for k, v in filenames.items() if v<=round(resolution*self.octree_depth)}
+        # refilter for intelligent resolution picking (will need iterative rework)
+        if resolution >=0.10:
+            filenames = {k: v for k, v in filenames.items() if v<=math.ceil(self.octree_depth/2)}
+        else:
+            filenames = {k: v for k, v in filenames.items() if v>=math.ceil(self.octree_depth/2)}
 
+        # loop through filtered files to get points (based on viewer resolution)
+        points = []
         for filename in filenames.keys():   
-            print(filename)
             # read las file from the node
             inFile = File(filename, mode='r')
             header_old = inFile.header
@@ -125,6 +134,7 @@ class PoTree:
             # level = len(filename.rsplit('/', 1)[-1])
             
             coords = np.vstack((inFile.x, inFile.y, inFile.z, channel_index, frame_index, inFile.intensity)).transpose()
+            print(inFile.intensity.dtype)
             # # append points for a certain resolution from the octree to the dictionary
             if points == []:
                 points = coords
@@ -133,15 +143,14 @@ class PoTree:
 
             inFile.close()
 
-        print(len(points))
         # filter points within the bounding box
         bx1 = bounding_box[0]
         by1 = bounding_box[1]
         bx2 = bounding_box[2]
         by2 = bounding_box[3]
         ll = np.array([bx1, by1])  # lower-left
-        ur = np.array([bx2, by2])  # upper-right
 
+        ur = np.array([bx2, by2])  # upper-right
         inidx = np.all(np.logical_and(ll <= points[:,1:2], points[:,1:2] <= ur), axis=1)
         points = points[inidx]
 
