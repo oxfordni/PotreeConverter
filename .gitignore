@@ -10,3 +10,6 @@ build/*
 .idea
 *.orig
 test/converted
+PoTreeReader/*.png
+PoTreeReader/*.las
+PoTreeReader/*.log
