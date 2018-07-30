@@ -70,7 +70,6 @@ bool LOCBPointReader::readNextPoint(){
 
 Point LOCBPointReader::getPoint(){
 	Point const p = reader->GetPoint();
-  //cout << p.position.x << ", " << p.position.y << ", " << p.position.z << endl;
     return p;
 }
 

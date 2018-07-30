@@ -77,11 +77,6 @@ inline bool loadDataFromLocbFile(
 {
     std::array<char, 8> const binaryFileHeader =  {'n', 'i', 'm', '_', 'l', 'o', 'c', 'b'};
 
-    // Version 1 - original
-    // Version 2 - add spotDetectionPixelPos to LocalizationResult - using LocalizationResultBinaryVersion2
-    // Version 3 - added acquisition per frame data
-    // Version 4 - added offset per frame data (drift correction)
-    // Version 5 - previous versions had p-value set to 1-p-value
     uint32_t const binaryFileVersionNumber = 5;
 
     std::cout << "Reading from file `" << fileName << "` ..." << std::endl;
