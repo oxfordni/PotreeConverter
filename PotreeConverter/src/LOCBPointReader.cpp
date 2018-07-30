@@ -27,7 +27,8 @@ LOCBPointReader::LOCBPointReader(string path){
 	// open first file
 	currentFile = files.begin();
 	reader = new LOCBReader(*currentFile);
-//    cout << "let's go..." << endl;
+	aabb = reader->getAABB();
+
 }
 
 LOCBPointReader::~LOCBPointReader(){
@@ -62,6 +63,7 @@ bool LOCBPointReader::readNextPoint(){
 		if(currentFile != files.end()){
 			reader = new LOCBReader(*currentFile);
 			hasPoints = reader->readPoint();
+			aabb = reader->getAABB();
 		}
 	}
 

@@ -12,7 +12,6 @@ namespace Potree{
 
 class LOCBReader{
 private:
-	AABB *aabb;
 	Point point;
 	string file;
 	int numChannels;
@@ -35,7 +34,7 @@ public:
 
 	bool readPoint(){
 		if(pointsRead == numPoints()){
-			return false;
+			return false;header
 		}
 
 		oni::LocalizationResult locb_point = locb_points[pointsRead];
@@ -59,6 +58,7 @@ public:
 
 	}
 
+//  AABB stands for: Axis Aligned Bounding Box
 	AABB getAABB(){
 	    AABB aabb;
 
@@ -75,6 +75,7 @@ public:
 
 class LOCBPointReader : public PointReader{
 private:
+//  AABB stands for: Axis Aligned Bounding Box
 	AABB aabb;
 	string path;
 	LOCBReader *reader;
