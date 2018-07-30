@@ -1,5 +1,5 @@
 #include <experimental/filesystem>
-#include "LocbPointReader.h"
+#include "LOCBPointReader.h"
 
 #include "stuff.h"
 
@@ -22,20 +22,6 @@ LOCBPointReader::LOCBPointReader(string path){
 		}
 	}else{
 		files.push_back(path);
-	}
-
-
-	// read bounding box
-	for (const auto &file : files) {
-		reader = new LOCBReader(file);
-		AABB lAABB = reader->getAABB();
-
-		aabb.update(lAABB.min);
-		aabb.update(lAABB.max);
-
-		reader->close();
-		delete reader;
-		reader = NULL;
 	}
 
 	// open first file

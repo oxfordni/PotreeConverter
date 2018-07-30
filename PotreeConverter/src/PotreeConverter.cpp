@@ -17,7 +17,7 @@
 #include "BINPointReader.hpp"
 #include "PlyPointReader.h"
 #include "XYZPointReader.hpp"
-#include "LocbPointReader.h"
+#include "LOCBPointReader.h"
 
 #include <chrono>
 #include <sstream>
