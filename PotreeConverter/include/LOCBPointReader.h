@@ -12,42 +12,39 @@ namespace Potree{
 
 class LOCBReader{
 private:
-	Point point;
+	Point lastReadPoint;
 	string file;
 	int numChannels;
 	int numFrames;
-
-    std::vector<std::array<int, 3> > points_vector;
     int pointsRead = 0;
+    oni::LocalizationResultsHeader header;
+    std::vector<oni::LocalizationResult> locb_points;
+    oni::FileFrameIndicesToAcquisitionData  acq_metadata;
 
 
 public:
 
-	oni::LocalizationResultsHeader header;
-    std::vector<oni::LocalizationResult> locb_points;
-    oni::FileFrameIndicesToAcquisitionData  acq_metadata;
-
 	LOCBReader(string fileName){
-
+		file = fileName;
 		loadDataFromLocbFile(fileName, header, locb_points, acq_metadata);
 	}
 
 	bool readPoint(){
 		if(pointsRead == numPoints()){
-			return false;header
+			return false;
 		}
 
 		oni::LocalizationResult locb_point = locb_points[pointsRead];
-		point = Point(locb_point.rawPosition_x,locb_point.rawPosition_y,locb_point.rawPosition_z);
-		point.channelIndex = locb_point.channelIndex;
-		point.frameIndex = locb_point.frameIndex;
-		point.intensity = locb_point.intensity;
+		lastReadPoint = Point(locb_point.rawPosition_x,locb_point.rawPosition_y,locb_point.rawPosition_z);
+		lastReadPoint.channelIndex = locb_point.channelIndex;
+		lastReadPoint.frameIndex = locb_point.frameIndex;
+		lastReadPoint.intensity = locb_point.intensity;
 		pointsRead++;
 		return true;
 	}
 
 	Point GetPoint(){
-		return point;
+		return lastReadPoint;
 	}
 
 	long long numPoints() {
@@ -79,8 +76,7 @@ private:
 	AABB aabb;
 	string path;
 	LOCBReader *reader;
-	vector<string> files;
-	vector<string>::iterator currentFile;
+
 public:
 
 	LOCBPointReader(string path);
