@@ -1,4 +1,5 @@
 #include "LOCBPointReader.h"
+#include "stuff.h"
 
 namespace Potree{
 
