@@ -15,8 +15,8 @@ void LASPointWriter::write(const Point &point){
 	laszip_set_coordinates(writer, coordinates);
 	// set points to "extended type"
 	this->point->extended_point_type = 1;
-	this->point->rgb[0] = point.color.z * 256;
-	this->point->rgb[1] = point.color.z * 256;
+	this->point->rgb[0] = (laszip_I16)(point.channelIndex);
+	this->point->rgb[1] = (laszip_I16)(point.frameIndex);
 	this->point->rgb[2] = point.color.z * 256;
 
 	this->point->intensity = point.intensity;

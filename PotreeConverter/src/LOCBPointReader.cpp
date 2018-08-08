@@ -1,9 +1,4 @@
-#include <experimental/filesystem>
 #include "LOCBPointReader.h"
-
-#include "stuff.h"
-
-namespace fs = std::experimental::filesystem;
 
 namespace Potree{
 

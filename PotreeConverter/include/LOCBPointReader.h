@@ -13,9 +13,6 @@ namespace Potree{
 class LOCBReader{
 private:
 	Point lastReadPoint;
-	string file;
-	int numChannels;
-	int numFrames;
     int pointsRead = 0;
     oni::LocalizationResultsHeader header;
     std::vector<oni::LocalizationResult> locb_points;
@@ -25,7 +22,6 @@ private:
 public:
 
 	LOCBReader(string fileName){
-		file = fileName;
 		loadDataFromLocbFile(fileName, header, locb_points, acq_metadata);
 	}
 

@@ -147,12 +147,10 @@ inline bool loadDataFromLocbFile(
     }
     std::vector<std::uint8_t> numChannels;
     for (uint64_t i = 0; i < numLocalizationResults; i++)
-    {   uint32_t frameIndex;
-        uint8_t channelIndex;
-        oni::LocalizationResult currLocalizationResult;
+    {   oni::LocalizationResult currLocalizationResult;
 
-        readBin(in, frameIndex);
-        readBin(in, channelIndex);
+        readBin(in, currLocalizationResult.frameIndex);
+        readBin(in, currLocalizationResult.channelIndex);
         readBin(in, currLocalizationResult.rawPosition_x);
         readBin(in, currLocalizationResult.rawPosition_y);
         readBin(in, currLocalizationResult.rawPosition_z);
@@ -172,15 +170,8 @@ inline bool loadDataFromLocbFile(
         readBin(in, currLocalizationResult.spotDetectionPixelPos_x);
         readBin(in, currLocalizationResult.spotDetectionPixelPos_y);
 
-        currLocalizationResult.frameIndex = frameIndex;
-        currLocalizationResult.channelIndex = channelIndex;
-
-        localizationResultMap.push_back(currLocalizationResult);
-        if (std::find(numChannels.begin(), numChannels.end(), channelIndex) == numChannels.end()) {
-            numChannels.push_back(channelIndex);
-        }
-
-        // check for minimum values
+        // check for minimum and maximum values
+        localizationResultsHeader.numOfChannels = std::max(localizationResultsHeader.numOfChannels, currLocalizationResult.channelIndex);
         localizationResultsHeader.x_min = std::min(localizationResultsHeader.x_min, currLocalizationResult.rawPosition_x);
         localizationResultsHeader.x_max = std::max(localizationResultsHeader.x_max, currLocalizationResult.rawPosition_x);
         localizationResultsHeader.y_min = std::min(localizationResultsHeader.y_min, currLocalizationResult.rawPosition_y);
@@ -219,10 +210,9 @@ inline bool loadDataFromLocbFile(
         acquisitionFrameDataMap[frameIndexFst] = currAcquisitionFrameData;
     }
 
-    // populate header with number of frames,channels and points
+    // populate header with number of frames and points
     localizationResultsHeader.numOfPoints = numLocalizationResults;
-    localizationResultsHeader.numOfFrames = numAcquisitionData;
-    localizationResultsHeader.numOfChannels = numChannels.size();
+    localizationResultsHeader.numOfFrames = numAcquisitionData;;
     {
     return true;
     }
