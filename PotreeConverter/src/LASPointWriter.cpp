@@ -25,8 +25,8 @@ void LASPointWriter::write(const Point &point){
 	this->point->number_of_returns = point.numberOfReturns;
 	this->point->point_source_ID = point.pointSourceID;
 	
-	*((laszip_I16*)(this->point->extra_bytes + 0)) = (laszip_I16)(point.channelIndex);
-	*((laszip_I16*)(this->point->extra_bytes + 2)) = (laszip_I16)(point.frameIndex);
+	// *((laszip_I16*)(this->point->extra_bytes + 0)) = (laszip_I16)(point.channelIndex);
+	// *((laszip_I16*)(this->point->extra_bytes + 2)) = (laszip_I16)(point.frameIndex);
 	laszip_set_point(writer, this->point);
 	laszip_write_point(writer);
 

@@ -56,13 +56,14 @@ public:
 		header.x_scale_factor = scale;
 		header.y_scale_factor = scale;
 		header.z_scale_factor = scale;
-		header.point_data_record_length = 26 + (2*2);
+		// header.point_data_record_length = 26 + (2*2);
+		header.point_data_record_length = 26;
 		header.number_of_point_records = 111;
 
 
 		laszip_create(&writer);
-		laszip_add_attribute(writer, 3, "channelIndex", "channelIndex", 1.00, 0.0);
-		laszip_add_attribute(writer, 3, "frameIndex", "frameIndex", 1.00, 0.0);
+		// laszip_add_attribute(writer, 3, "channelIndex", "channelIndex", 1.00, 0.0);
+		// laszip_add_attribute(writer, 3, "frameIndex", "frameIndex", 1.00, 0.0);
 		laszip_BOOL compress = iEndsWith(file, ".laz") ? 1 : 0;
 		if(compress){
 			laszip_BOOL request_writer = 1;
