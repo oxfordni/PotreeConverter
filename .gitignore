@@ -10,3 +10,5 @@ build/*
 .idea
 *.orig
 test/converted
+PoTreeReader/*.*
+PoTreeReader/__pycache__/
